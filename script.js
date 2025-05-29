@@ -3,7 +3,9 @@ const tableBody = document.querySelector("#studentsTable tbody");
 const averageDiv = document.getElementById("average");
 const editIndexInput = document.getElementById("editIndex");
 const date = document.getElementById("date").value;
-
+const totalStudentsSpan = document.getElementById("totalStudents");
+const approvedCountSpan = document.getElementById("approvedCount");
+const failedCountSpan = document.getElementById("failedCount");
 
 document.getElementById("studentForm").addEventListener("submit", function (e) {
     e.preventDefault();
@@ -12,6 +14,7 @@ document.getElementById("studentForm").addEventListener("submit", function (e) {
     const lastName = document.getElementById("lastName").value.trim();
     const grade = parseFloat(document.getElementById("grade").value);
     const date = document.getElementById("date").value;
+    
 
     if (!name || !lastName || isNaN(grade) || grade < 1 || grade > 7 || !date) {
         alert("Error: por favor ingrese todos los datos correctamente (nota entre 1 y 7 y fecha válida)");
@@ -22,7 +25,7 @@ document.getElementById("studentForm").addEventListener("submit", function (e) {
         name,
         lastName,
         grade,
-        date // ✅ Siempre toma la fecha del formulario, nueva o editada
+        date 
     };
     
     if (editIndexInput.value === "") {
@@ -68,7 +71,7 @@ function updateStudentRow(index, student) {
     row.cells[0].textContent = student.name;
     row.cells[1].textContent = student.lastName;
     row.cells[2].textContent = formatearFecha(student.date);
-    row.cells[3].textContent = student.grade;  // ✅ Esta es la nota
+    row.cells[3].textContent = student.grade;  
 }
 
 
@@ -93,14 +96,29 @@ function deleteEstudiante(student, row) {
 function calcularPromedio() {
     if (students.length === 0) {
         averageDiv.textContent = "Promedio General del Curso : N/A";
+        actualizarResumen();
         return;
     }
+
     const total = students.reduce((sum, student) => sum + student.grade, 0);
     const prom = total / students.length;
     averageDiv.textContent = "Promedio General del Curso : " + prom.toFixed(2);
+    actualizarResumen();
 }
+
+
+function actualizarResumen() {
+    const total = students.length;
+    const aprobados = students.filter(s => s.grade >= 4).length;
+    const reprobados = total - aprobados;
+
+    totalStudentsSpan.textContent = total;
+    approvedCountSpan.textContent = aprobados;
+    failedCountSpan.textContent = reprobados;
+}
+
 
 function formatearFecha(fechaISO) {
     const [year, month, day] = fechaISO.split("-");
-    return `${day}/${month}/${year}`; // Formato dd/mm/aaaa
+    return `${day}/${month}/${year}`; 
 }
