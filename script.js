@@ -109,7 +109,7 @@ function calcularPromedio() {
 
 function actualizarResumen() {
     const total = students.length;
-    const aprobados = students.filter(s => s.grade >= 4).length;
+    const aprobados = students.filter(s => s.grade >= 5).length;
     const reprobados = total - aprobados;
 
     totalStudentsSpan.textContent = total;
